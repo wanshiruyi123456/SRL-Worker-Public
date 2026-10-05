@@ -1,0 +1,1 @@
+WorkerBridge.js、BridgeSession.js、BridgeParcels.js 和 CloudProxyProtocol.mjs 改编自 SillyTavern Resource Library Public 中的公开实现。相关源码及其衍生部分遵循本仓库 LICENSE 中的许可条款。

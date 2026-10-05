@@ -1,0 +1,6 @@
+node_modules/
+.wrangler/
+coverage/
+wrangler.jsonc
+*.local
+.dev.vars*

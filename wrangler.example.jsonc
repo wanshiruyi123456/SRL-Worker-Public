@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "srl-worker-public",
+  "main": "cloudflare/Worker.js",
+  "compatibility_date": "2026-09-24",
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [{ "name": "BRIDGE_SESSIONS", "class_name": "BridgeSession" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BridgeSession"] }],
+  "observability": { "enabled": true }
+}
