@@ -4,18 +4,26 @@
 
 ## 部署
 
-需要 Node.js 22 或更新版本、pnpm 11 和自己的 Cloudflare 账号。
+需要 GitHub 账号和自己的 Cloudflare 账号；部署过程在 Cloudflare 上完成，本机不需要安装 Node.js、pnpm 或 Wrangler。
 
-```powershell
-pnpm install --frozen-lockfile
-pnpm exec wrangler login
-Copy-Item wrangler.example.jsonc wrangler.jsonc
-pnpm deploy
-```
+1. 在 GitHub Fork 本仓库。
+2. 打开 Cloudflare Dashboard → **Workers & Pages** → **Create application**，在 **Import a repository** 旁选择 **Get started**。
+3. 连接 GitHub 并选择刚 Fork 的仓库；若仓库未显示，先授权 Cloudflare GitHub App 访问该仓库。生产分支选择 `main`。
+4. 按以下内容配置：
+   - Worker 名称：`srl-worker-public`
+   - Build command：留空
+   - Deploy command：`pnpm exec wrangler deploy --config wrangler.example.jsonc`
+   - Preview command：保留默认的 `npx wrangler preview`
+   - Enable Preview builds：关闭
+   - Protect with Cloudflare Access：关闭
+   - Advanced settings：保持默认
+5. 选择 **Save and Deploy**。若部署失败，在 Worker 的部署历史中打开本次构建日志。
 
-`wrangler.jsonc` 会被 Git 忽略。首次部署会创建 `BridgeSession` Durable Object 所需的 SQLite 类；不要把账号信息、Token 或个人绑定配置提交到仓库。
+Cloudflare 会从仓库安装依赖并运行部署命令。首次部署会创建 `BridgeSession` Durable Object 所需的 SQLite 类。
 
-部署后，在 SRL Public 的“设置 → 自部署 Worker”填写 Cloudflare 返回的 Worker HTTPS 根地址，例如 `https://your-worker.workers.dev`。这个地址保存在当前浏览器或 APK 的本机设置中。无需设备码中继和 Koofr 代理时可留空。
+部署完成后，复制 Cloudflare 显示的 Worker HTTPS 根地址，在 SRL Public 的“设置 → 自部署 Worker”中粘贴并保存。地址保存在当前浏览器或 APK 的本机设置中。
+
+以后在 GitHub Fork 页面点击 **Sync fork → Update branch**，Cloudflare 监听到 `main` 更新后会自动重新部署。
 
 ## 提供的接口
 
@@ -25,7 +33,9 @@ pnpm deploy
 
 浏览器调用使用不带 Cookie 的 CORS 请求。CORS 只允许常规网页、Capacitor、Ionic 与 Tauri 来源，不构成用户身份验证；请只在自己的 Cloudflare 账号部署，并妥善保管 Koofr 凭据。
 
-## 本地检查
+## 本地检查（维护者可选）
+
+以下命令仅供维护者在本机开发和验证，不是部署步骤；需要 Node.js 22 或更新版本及 pnpm 11。
 
 ```powershell
 pnpm test
